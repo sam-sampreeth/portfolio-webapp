@@ -1,5 +1,4 @@
 import { ArrowUp } from "lucide-react";
-import { IoMdFlower } from "react-icons/io";
 import { PiFlowerFill } from "react-icons/pi";
 
 export const Footer = () => {
@@ -20,7 +19,7 @@ export const Footer = () => {
           </p>
 
         </div>
-        <div className="gap-3 flex flex-col items-center animate-bounce mt-30">
+        <div className="gap-3 flex flex-col items-center  mt-30">
             <a href="#hero">
                 <span className="text-sm text-muted-foreground mb-2"> Top </span>
                 <ArrowUp className="h-5 w-5 text-primary" />
