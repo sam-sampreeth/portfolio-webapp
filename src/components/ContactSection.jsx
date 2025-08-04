@@ -12,18 +12,48 @@ export const ContactSection = () => {
     const { toast } = useToast();
     const [isSubmitting, setIsSubmitting] = useState(false);
 
-    const handleSubmit = (e) => {
-        e.preventDefault()
-
+    const handleSubmit = async (e) => {
+        e.preventDefault();
         setIsSubmitting(true);
-        setTimeout(()=>{
-            toast({
-                title: "Message Sent!",
-                description: "Thanks for your message. I'll get back to you ASAP!"
+
+        const formData = new FormData(e.target);
+
+        try {
+            const response = await fetch("https://formspree.io/f/xnnzbkqp", {
+            method: "POST",
+            headers: {
+                Accept: "application/json",
+            },
+            body: formData,
             });
-            setIsSubmitting(false);
-        }, 1000)
-    };
+
+    const result = await response.json();
+
+    if (response.ok) {
+      toast({
+        title: "Message Sent!",
+        description: "Thanks for your message. I'll get back to you ASAP!",
+      });
+      e.target.reset();
+    } else {
+      toast({
+        title: "Error",
+        description: result?.errors?.[0]?.message || "Something went wrong.",
+      });
+      console.error("Formspree Error:", result);
+    }
+  } catch (err) {
+    toast({
+      title: "Network Error",
+      description: "Unable to send message. Please try again later.",
+    });
+    console.error("Network Error:", err);
+  } finally {
+    setIsSubmitting(false);
+  }
+};
+
+
 
     return (
         <section id="contact" className="py-24 px-4 relative bg-secondary/30">
@@ -89,12 +119,12 @@ export const ContactSection = () => {
                         </div>
                     </div>
 
-                    <div className="bg-card p-8 rounded-lg shadow-xs" onSubmit={handleSubmit}>
+                    <div className="bg-card p-8 rounded-lg shadow-xs">
                         <h3 className="text-2xl font-semibold mb-6">
                             Send me a message!
                         </h3>
 
-                        <form className="space-y-6">
+                        <form className="space-y-6"  method="POST" onSubmit={handleSubmit}>
                             <div className="text-left">
                                 <label htmlFor="name" className="block text-sm font-medium mb-2 px-5">Your Name</label>
                                 <input type="text" id="name" name="name" required className="w-full px-4 py-3 rounded-md border border-input bg-background focus:outline-hidden focus:ring-2 focus:ring-primary" placeholder="Name goes here ..."/>
